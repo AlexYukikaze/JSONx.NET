@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
-    public class TestMatcher
+    public class TestLexer
     {
         [Test]
         public void TokenEquality()
