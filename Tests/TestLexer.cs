@@ -23,7 +23,7 @@ namespace Tests
         public void TokenizerPosition()
         {
             var source = "";
-            var tokenizer = new Tokenizer(() => source.ToList());
+            var tokenizer = new Tokenizer(source);
             Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 1));
             Assert.AreEqual(tokenizer.Index, 0);
         }
@@ -32,7 +32,7 @@ namespace Tests
         public void TokenizerPeek()
         {
             var source = "foo";
-            var tokenizer = new Tokenizer(() => source.ToList());
+            var tokenizer = new Tokenizer(source);
             Assert.AreEqual('f', tokenizer.Peek());
             Assert.AreEqual('o', tokenizer.Peek(1));
             Assert.AreEqual('o', tokenizer.Peek(2));
@@ -44,7 +44,7 @@ namespace Tests
         public void TokenizerConsume()
         {
             var source = "foo";
-            var tokenizer = new Tokenizer(() => source.ToList());
+            var tokenizer = new Tokenizer(source);
             Assert.AreEqual('f', tokenizer.Current);
             Assert.AreEqual(new PositionEntry(1, 1), tokenizer.Position);
             Assert.AreEqual(tokenizer.Index, 0);
@@ -64,7 +64,7 @@ namespace Tests
         public void TokenizerNewLine()
         {
             var source = "f\nb";
-            var tokenizer = new Tokenizer(() => source.ToList());
+            var tokenizer = new Tokenizer(source);
             Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 1));
             Assert.AreEqual(tokenizer.Index, 0);
             tokenizer.Consume();
@@ -83,7 +83,7 @@ namespace Tests
         public void TokenizerSnapshots()
         {
             var source = "foo";
-            var tokenizer = new Tokenizer(() => source.ToList());
+            var tokenizer = new Tokenizer(source);
             tokenizer.TakeSnapshot();
             tokenizer.Consume();
             Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 2));
@@ -97,7 +97,7 @@ namespace Tests
         public void TokenizerEnd()
         {
             var source = "";
-            var tokenizer = new Tokenizer(() => source.ToList());
+            var tokenizer = new Tokenizer(source);
             Assert.True(tokenizer.End(), "End of file expected");
         }
     }

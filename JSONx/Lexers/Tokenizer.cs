@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace JSONx.Lexers
 {
@@ -17,7 +18,7 @@ namespace JSONx.Lexers
             }
         }
 
-        public Tokenizer(Func<List<char>> creator) : base(creator)
+        public Tokenizer(string source) : base(() => source.ToList())
         {
             Column = 1;
             Row = 1;
