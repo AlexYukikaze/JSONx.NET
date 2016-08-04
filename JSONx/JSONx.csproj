@@ -38,7 +38,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lexers\PositionEntry.cs" />
+    <Compile Include="Lexers\Token.cs" />
+    <Compile Include="Lexers\TokenSpan.cs" />
+    <Compile Include="Lexers\TokenType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Lexers" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
