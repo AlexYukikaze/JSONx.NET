@@ -40,7 +40,9 @@
   <ItemGroup>
     <Compile Include="Lexers\PositionEntry.cs" />
     <Compile Include="Lexers\Token.cs" />
+    <Compile Include="Lexers\Tokenizer.cs" />
     <Compile Include="Lexers\TokenSpan.cs" />
+    <Compile Include="Lexers\TokenStream.cs" />
     <Compile Include="Lexers\TokenType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
