@@ -22,16 +22,16 @@ namespace Tests
         [Test]
         public void TokenizerPosition()
         {
-            var source = "";
-            var tokenizer = new Tokenizer(source);
+            var tokenizer = new Tokenizer(" ");
             Assert.AreEqual(tokenizer.Position, new PositionEntry(0, 1, 1));
+            tokenizer.Consume();
+            Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 1, 2));
         }
 
         [Test]
         public void TokenizerPeek()
         {
-            var source = "foo";
-            var tokenizer = new Tokenizer(source);
+            var tokenizer = new Tokenizer("foo");
             Assert.AreEqual('f', tokenizer.Peek());
             Assert.AreEqual('o', tokenizer.Peek(1));
             Assert.AreEqual('o', tokenizer.Peek(2));
@@ -41,8 +41,7 @@ namespace Tests
         [Test]
         public void TokenizerConsume()
         {
-            var source = "foo";
-            var tokenizer = new Tokenizer(source);
+            var tokenizer = new Tokenizer("foo");
             Assert.AreEqual('f', tokenizer.Current);
             Assert.AreEqual(new PositionEntry(0, 1, 1), tokenizer.Position);
             tokenizer.Consume();
@@ -58,8 +57,7 @@ namespace Tests
         [Test]
         public void TokenizerNewLine()
         {
-            var source = "f\nb";
-            var tokenizer = new Tokenizer(source);
+            var tokenizer = new Tokenizer("f\nb");
             Assert.AreEqual(new PositionEntry(0, 1, 1), tokenizer.Position);
             tokenizer.Consume();
             Assert.AreEqual(new PositionEntry(1, 1, 2), tokenizer.Position);
@@ -72,8 +70,7 @@ namespace Tests
         [Test]
         public void TokenizerSnapshots()
         {
-            var source = "foo";
-            var tokenizer = new Tokenizer(source);
+            var tokenizer = new Tokenizer("foo");
             tokenizer.TakeSnapshot();
             tokenizer.Consume();
             Assert.AreEqual(new PositionEntry(1, 1, 2), tokenizer.Position);
@@ -84,17 +81,15 @@ namespace Tests
         [Test]
         public void TokenizerEnd()
         {
-            var source = "";
-            var tokenizer = new Tokenizer(source);
+            var tokenizer = new Tokenizer("");
             Assert.True(tokenizer.End(), "End of file expected");
         }
 
         [Test]
         public void MatchWhitespace()
         {
-            var tokenizer = new Tokenizer(" \t\r\n ");
             var matcher = new WhitespaceMatcher();
-            var token = matcher.Match(tokenizer);
+            var token = MatchToken(" \t\r\n ", matcher);
             Assert.AreEqual(TokenType.Whitespace, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(5, 2, 2), token.Span.End);
@@ -103,9 +98,8 @@ namespace Tests
         [Test]
         public void MatchMultilineComment()
         {
-            var tokenizer = new Tokenizer("/*\n*/");
             var matcher = new MultilineCommentMatcher();
-            var token = matcher.Match(tokenizer);
+            var token = MatchToken("/*\n*/", matcher);
             Assert.AreEqual(TokenType.MultilineComment, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(5, 2, 3), token.Span.End);
@@ -114,16 +108,13 @@ namespace Tests
         [Test]
         public void MatchSinglelineComment()
         {
-            var tokenizer = new Tokenizer("// comment\n");
             var matcher = new SinglelineCommentMatcher();
-            var token = matcher.Match(tokenizer);
+            var token = MatchToken("// comment\n", matcher);
             Assert.AreEqual(TokenType.SinglelineComment, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(11, 2, 1), token.Span.End);
 
-            tokenizer = new Tokenizer("// comment");
-            matcher = new SinglelineCommentMatcher();
-            token = matcher.Match(tokenizer);
+            token = MatchToken("// comment", matcher);
             Assert.AreEqual(TokenType.SinglelineComment, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(10, 1, 11), token.Span.End);
@@ -132,39 +123,39 @@ namespace Tests
         [Test]
         public void MatchString()
         {
-            var tokenizer = new Tokenizer("'example'");
-            var matcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
-            var token = matcher.Match(tokenizer);
+            var singleQuoteMatcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
+            var doubleQuoteMatcher = new StringMatcher(StringMatcher.DOUBLE_QUOTE);
+            var token = MatchToken("\"example\"", doubleQuoteMatcher);
             Assert.NotNull(token);
             Assert.AreEqual(TokenType.String, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(9, 1, 10), token.Span.End);
             Assert.AreEqual("example", token.Value);
 
-            tokenizer = new Tokenizer("\"example\"");
-            matcher = new StringMatcher(StringMatcher.DOUBLE_QUOTE);
-            token = matcher.Match(tokenizer);
+            token = MatchToken("'example'", singleQuoteMatcher);
             Assert.NotNull(token);
             Assert.AreEqual(TokenType.String, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(9, 1, 10), token.Span.End);
             Assert.AreEqual("example", token.Value);
 
-            tokenizer = new Tokenizer("'\\x41\\u0042\\U00000043\\j'");
-            matcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
-            token = matcher.Match(tokenizer);
+            token = MatchToken("'\\x41\\u0042\\U00000043\\j'", singleQuoteMatcher);
             Assert.NotNull(token);
             Assert.AreEqual(TokenType.String, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(24, 1, 25), token.Span.End);
             Assert.AreEqual("ABC\\j", token.Value);
 
-            tokenizer = new Tokenizer("'\\xZZ\\x1R'");
-            matcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
-            token = matcher.Match(tokenizer);
+            token = MatchToken("'\\xZZ\\x1R'", singleQuoteMatcher);
             Assert.NotNull(token);
             Assert.AreEqual(TokenType.String, token.Type);
             Assert.AreEqual("\\xZZ\\x1R", token.Value);
+        }
+
+        private static Token MatchToken(string source, Matcher matcher)
+        {
+            var tokenizer = new Tokenizer(source);
+            return matcher.Match(tokenizer);
         }
     }
 }
