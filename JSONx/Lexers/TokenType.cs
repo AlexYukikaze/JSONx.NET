@@ -16,6 +16,9 @@
         False,
         Null,
 
-        EOF
+        EOF,
+        Whitespace,
+        MultilineComment,
+        SinglelineComment
     }
 }

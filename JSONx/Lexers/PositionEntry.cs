@@ -4,11 +4,13 @@ namespace JSONx.Lexers
 {
     public class PositionEntry : IEquatable<PositionEntry>
     {
+        public int Index { get; }
         public int Row { get; }
         public int Column { get; }
 
-        public PositionEntry(int row, int col)
+        public PositionEntry(int index, int row, int col)
         {
+            Index = index;
             Row = row;
             Column = col;
         }
@@ -17,12 +19,12 @@ namespace JSONx.Lexers
         {
             if (ReferenceEquals(this, other)) return true;
             if (ReferenceEquals(null, other)) return false;
-            return Row.Equals(other.Row) && Column.Equals(other.Column);
+            return Index.Equals(other.Index) && Row.Equals(other.Row) && Column.Equals(other.Column);
         }
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}", Row, Column);
+            return string.Format("{0} ({1}:{2})", Index, Row, Column);
         }
     }
 }

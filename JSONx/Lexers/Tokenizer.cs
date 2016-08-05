@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace JSONx.Lexers
@@ -11,47 +10,47 @@ namespace JSONx.Lexers
 
         public PositionEntry Position
         {
-            get { return new PositionEntry(Row, Column); }
-            private set {
+            get { return new PositionEntry(Index, Row, Column); }
+            private set
+            {
+                Index = value.Index;
                 Row = value.Row;
                 Column = value.Column;
             }
         }
 
-        public Tokenizer(string source) : base(() => source.ToList())
+        public Tokenizer(string source) : base(source.ToList)
         {
             Column = 1;
             Row = 1;
             PositionSnapshots = new Stack<PositionEntry>();
         }
 
-        public override void Consume()
+        public override void Consume(int count = 1)
         {
-            base.Consume();
-            Column++;
+            base.Consume(count);
+            Column += count;
         }
 
         public void NewLine()
         {
+            Consume();
             Column = 1;
             Row++;
         }
 
         public override void TakeSnapshot()
         {
-            base.TakeSnapshot();
             PositionSnapshots.Push(Position);
         }
 
         public override void CommitSnapshot()
         {
-            base.CommitSnapshot();
             PositionSnapshots.Pop();
         }
 
         public override void RollbackSnapshot()
         {
-            base.RollbackSnapshot();
             Position = PositionSnapshots.Pop();
         }
     }

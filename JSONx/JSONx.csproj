@@ -38,12 +38,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lexers\LexerException.cs" />
+    <Compile Include="Lexers\Matcher.cs" />
+    <Compile Include="Lexers\MultilineCommentMatcher.cs" />
     <Compile Include="Lexers\PositionEntry.cs" />
+    <Compile Include="Lexers\SinglelineCommentMatcher.cs" />
     <Compile Include="Lexers\Token.cs" />
     <Compile Include="Lexers\Tokenizer.cs" />
     <Compile Include="Lexers\TokenSpan.cs" />
     <Compile Include="Lexers\TokenStream.cs" />
     <Compile Include="Lexers\TokenType.cs" />
+    <Compile Include="Lexers\WhitespaceMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

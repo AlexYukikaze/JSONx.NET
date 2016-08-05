@@ -24,8 +24,7 @@ namespace Tests
         {
             var source = "";
             var tokenizer = new Tokenizer(source);
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 1));
-            Assert.AreEqual(tokenizer.Index, 0);
+            Assert.AreEqual(tokenizer.Position, new PositionEntry(0, 1, 1));
         }
 
         [Test]
@@ -37,7 +36,6 @@ namespace Tests
             Assert.AreEqual('o', tokenizer.Peek(1));
             Assert.AreEqual('o', tokenizer.Peek(2));
             Assert.AreEqual(default(char), tokenizer.Peek(3));
-            Assert.AreEqual(default(char), '\0');
         }
 
         [Test]
@@ -46,16 +44,13 @@ namespace Tests
             var source = "foo";
             var tokenizer = new Tokenizer(source);
             Assert.AreEqual('f', tokenizer.Current);
-            Assert.AreEqual(new PositionEntry(1, 1), tokenizer.Position);
-            Assert.AreEqual(tokenizer.Index, 0);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), tokenizer.Position);
             tokenizer.Consume();
             Assert.AreEqual('o', tokenizer.Current);
-            Assert.AreEqual(new PositionEntry(1, 2), tokenizer.Position);
-            Assert.AreEqual(tokenizer.Index, 1);
+            Assert.AreEqual(new PositionEntry(1, 1, 2), tokenizer.Position);
             tokenizer.Consume();
             Assert.AreEqual('o', tokenizer.Current);
-            Assert.AreEqual(new PositionEntry(1, 3), tokenizer.Position);
-            Assert.AreEqual(tokenizer.Index, 2);
+            Assert.AreEqual(new PositionEntry(2, 1, 3), tokenizer.Position);
             tokenizer.Consume();
             Assert.AreEqual(default(char), tokenizer.Current);
         }
@@ -65,18 +60,13 @@ namespace Tests
         {
             var source = "f\nb";
             var tokenizer = new Tokenizer(source);
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 1));
-            Assert.AreEqual(tokenizer.Index, 0);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), tokenizer.Position);
             tokenizer.Consume();
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 2));
-            Assert.AreEqual(tokenizer.Index, 1);
-            tokenizer.Consume();
+            Assert.AreEqual(new PositionEntry(1, 1, 2), tokenizer.Position);
             tokenizer.NewLine();
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(2, 1));
-            Assert.AreEqual(tokenizer.Index, 2);
+            Assert.AreEqual(new PositionEntry(2, 2, 1), tokenizer.Position);
             tokenizer.Consume();
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(2, 2));
-            Assert.AreEqual(tokenizer.Index, 3);
+            Assert.AreEqual(new PositionEntry(3, 2, 2), tokenizer.Position);
         }
 
         [Test]
@@ -86,11 +76,9 @@ namespace Tests
             var tokenizer = new Tokenizer(source);
             tokenizer.TakeSnapshot();
             tokenizer.Consume();
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 2));
-            Assert.AreEqual(tokenizer.Index, 1);
+            Assert.AreEqual(new PositionEntry(1, 1, 2), tokenizer.Position);
             tokenizer.RollbackSnapshot();
-            Assert.AreEqual(tokenizer.Position, new PositionEntry(1, 1));
-            Assert.AreEqual(tokenizer.Index, 0);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), tokenizer.Position);
         }
 
         [Test]
@@ -99,6 +87,46 @@ namespace Tests
             var source = "";
             var tokenizer = new Tokenizer(source);
             Assert.True(tokenizer.End(), "End of file expected");
+        }
+
+        [Test]
+        public void MatchWhitespace()
+        {
+            var tokenizer = new Tokenizer(" \t\r\n ");
+            var matcher = new WhitespaceMatcher();
+            var token = matcher.Match(tokenizer);
+            Assert.AreEqual(TokenType.Whitespace, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(5, 2, 2), token.Span.End);
+        }
+
+        [Test]
+        public void MatchMultilineComment()
+        {
+            var tokenizer = new Tokenizer("/*\n*/");
+            var matcher = new MultilineCommentMatcher();
+            var token = matcher.Match(tokenizer);
+            Assert.AreEqual(TokenType.MultilineComment, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(5, 2, 3), token.Span.End);
+        }
+
+        [Test]
+        public void MatchSinglelineComment()
+        {
+            var tokenizer = new Tokenizer("// comment\n");
+            var matcher = new SinglelineCommentMatcher();
+            var token = matcher.Match(tokenizer);
+            Assert.AreEqual(TokenType.SinglelineComment, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(11, 2, 1), token.Span.End);
+
+            tokenizer = new Tokenizer("// comment");
+            matcher = new SinglelineCommentMatcher();
+            token = matcher.Match(tokenizer);
+            Assert.AreEqual(TokenType.SinglelineComment, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(10, 1, 11), token.Span.End);
         }
     }
 }

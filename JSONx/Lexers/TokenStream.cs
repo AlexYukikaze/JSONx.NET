@@ -25,9 +25,9 @@ namespace JSONx.Lexers
             Items = creator();
         }
 
-        public virtual void Consume()
+        public virtual void Consume(int count = 1)
         {
-            Index++;
+            Index += count;
         }
 
         public virtual T Peek(int lookahead = 0)
