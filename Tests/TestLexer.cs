@@ -128,5 +128,43 @@ namespace Tests
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(10, 1, 11), token.Span.End);
         }
+
+        [Test]
+        public void MatchString()
+        {
+            var tokenizer = new Tokenizer("'example'");
+            var matcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
+            var token = matcher.Match(tokenizer);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.String, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(9, 1, 10), token.Span.End);
+            Assert.AreEqual("example", token.Value);
+
+            tokenizer = new Tokenizer("\"example\"");
+            matcher = new StringMatcher(StringMatcher.DOUBLE_QUOTE);
+            token = matcher.Match(tokenizer);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.String, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(9, 1, 10), token.Span.End);
+            Assert.AreEqual("example", token.Value);
+
+            tokenizer = new Tokenizer("'\\x41\\u0042\\U00000043\\j'");
+            matcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
+            token = matcher.Match(tokenizer);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.String, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(24, 1, 25), token.Span.End);
+            Assert.AreEqual("ABC\\j", token.Value);
+
+            tokenizer = new Tokenizer("'\\xZZ\\x1R'");
+            matcher = new StringMatcher(StringMatcher.SINGLE_QUOTE);
+            token = matcher.Match(tokenizer);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.String, token.Type);
+            Assert.AreEqual("\\xZZ\\x1R", token.Value);
+        }
     }
 }

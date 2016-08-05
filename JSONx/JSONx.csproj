@@ -43,6 +43,7 @@
     <Compile Include="Lexers\MultilineCommentMatcher.cs" />
     <Compile Include="Lexers\PositionEntry.cs" />
     <Compile Include="Lexers\SinglelineCommentMatcher.cs" />
+    <Compile Include="Lexers\StringMatcher.cs" />
     <Compile Include="Lexers\Token.cs" />
     <Compile Include="Lexers\Tokenizer.cs" />
     <Compile Include="Lexers\TokenSpan.cs" />
