@@ -6,14 +6,20 @@ namespace JSONx.Lexers
     {
         public TokenType Type { get; }
         public string Value { get; }
-        public TokenSpan Span { get; private set; }
+        public TokenSpan Span { get; set; }
 
-        public Token(TokenType type, TokenSpan span, string value = null)
+        public Token(TokenType type, TokenSpan span, string value)
         {
             Type = type;
             Span = span;
             Value = value;
         }
+
+        public Token(TokenType type, TokenSpan span) :
+            this(type, span, null) { }
+
+        public Token(TokenType type) :
+            this(type, new TokenSpan(), null) { }
 
         public bool Equals(Token other)
         {

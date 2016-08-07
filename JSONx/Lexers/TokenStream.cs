@@ -3,10 +3,9 @@ using System.Collections.Generic;
 
 namespace JSONx.Lexers
 {
-    public class TokenStream<T>
+    public abstract class TokenStream<T>
     {
         protected readonly List<T> Items;
-        protected readonly Stack<int> Snapshots;
 
         public int Index { get; protected set; }
 
@@ -18,12 +17,15 @@ namespace JSONx.Lexers
             }
         }
 
-        public TokenStream(Func<List<T>> creator)
+        protected TokenStream(Func<List<T>> creator)
         {
             Index = 0;
-            Snapshots = new Stack<int>();
             Items = creator();
         }
+
+        public abstract void TakeSnapshot();
+        public abstract void CommitSnapshot();
+        public abstract void RollbackSnapshot();
 
         public virtual void Consume(int count = 1)
         {
@@ -38,21 +40,6 @@ namespace JSONx.Lexers
         public bool End()
         {
             return EOF();
-        }
-
-        public virtual void TakeSnapshot()
-        {
-            Snapshots.Push(Index);
-        }
-
-        public virtual void CommitSnapshot()
-        {
-            Snapshots.Pop();
-        }
-
-        public virtual void RollbackSnapshot()
-        {
-            Index = Snapshots.Pop();
         }
 
         protected bool EOF(int lookahead = 0)

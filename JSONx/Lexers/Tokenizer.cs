@@ -39,6 +39,13 @@ namespace JSONx.Lexers
             Row++;
         }
 
+
+        public PositionEntry PeekSnapshot()
+        {
+
+            return PositionSnapshots.Peek();
+        }
+
         public override void TakeSnapshot()
         {
             PositionSnapshots.Push(Position);
