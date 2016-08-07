@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
 namespace JSONx.Lexers
@@ -21,7 +20,6 @@ namespace JSONx.Lexers
                 return null;
 
             var result = new StringBuilder();
-            var begin = tokenizer.Position;
 
             while (!tokenizer.End())
             {
@@ -29,12 +27,12 @@ namespace JSONx.Lexers
                 if (tokenizer.Current == QUOTE)
                 {
                     tokenizer.Consume();
-                    return new Token(TokenType.String, new TokenSpan(begin, tokenizer.Position), result.ToString());
+                    return new Token(TokenType.String, result.ToString());
                 }
 
                 if (tokenizer.Current == '\n')
                 {
-                    throw new LexerException("Not closed string", begin);
+                    throw new LexerException("Not closed string", tokenizer.PeekSnapshot());
                 }
 
                 if (tokenizer.Current == '\\')
@@ -54,7 +52,7 @@ namespace JSONx.Lexers
                     result.Append(tokenizer.Current);
                 }
             }
-            throw new LexerException("Not closed string", begin);
+            throw new LexerException("Not closed string", tokenizer.PeekSnapshot());
         }
 
         private bool HandleEscapeSequences(Tokenizer tokenizer, StringBuilder sb)

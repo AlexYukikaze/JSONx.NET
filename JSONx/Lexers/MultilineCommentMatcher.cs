@@ -9,15 +9,13 @@ namespace JSONx.Lexers
             if (tokenizer.Current != '/' && tokenizer.Peek(1) != '*')
                 return null;
 
-            var begin = tokenizer.Position;
-
             tokenizer.Consume(2);
             while (!tokenizer.End())
             {
                 if (tokenizer.Current == '*' && tokenizer.Peek(1) == '/')
                 {
                     tokenizer.Consume(2);
-                    return new Token(TokenType.MultilineComment, new TokenSpan(begin, tokenizer.Position));
+                    return new Token(TokenType.MultilineComment);
                 }
 
                 if (tokenizer.Current == '\n')
@@ -29,7 +27,7 @@ namespace JSONx.Lexers
                     tokenizer.Consume();
                 }
             }
-            throw new LexerException("Comment not closed", begin);
+            throw new LexerException("Comment not closed", tokenizer.PeekSnapshot());
         }
     }
 }

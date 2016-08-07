@@ -18,6 +18,9 @@ namespace JSONx.Lexers
         public Token(TokenType type, TokenSpan span) :
             this(type, span, null) { }
 
+        public Token(TokenType type, string value) :
+            this(type, new TokenSpan(), value) { }
+
         public Token(TokenType type) :
             this(type, new TokenSpan(), null) { }
 

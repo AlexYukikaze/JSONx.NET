@@ -7,8 +7,6 @@
             if (!char.IsWhiteSpace(tokenizer.Current))
                 return null;
 
-            var begin = tokenizer.Position;
-
             while (!tokenizer.End() && char.IsWhiteSpace(tokenizer.Current))
             {
                 if (tokenizer.Current == '\n')
@@ -20,7 +18,7 @@
                     tokenizer.Consume();
                 }
             }
-            return new Token(TokenType.Whitespace, new TokenSpan(begin, tokenizer.Position));
+            return new Token(TokenType.Whitespace);
         }
     }
 }
