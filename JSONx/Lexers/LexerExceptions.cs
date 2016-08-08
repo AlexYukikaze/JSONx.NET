@@ -14,4 +14,10 @@ namespace JSONx.Lexers
             Position = pos;
         }
     }
+
+    public class LexerException : MatcherException
+    {
+        public LexerException(string message, PositionEntry pos) :
+            base(message, pos) { }
+    }
 }

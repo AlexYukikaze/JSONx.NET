@@ -101,6 +101,8 @@ namespace Tests
             Assert.AreEqual(TokenType.MultilineComment, token.Type);
             Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
             Assert.AreEqual(new PositionEntry(5, 2, 3), token.Span.End);
+
+            Assert.Throws<MatcherException>(() => MatchToken("/*", matcher));
         }
 
         [Test]
@@ -233,6 +235,48 @@ namespace Tests
 
             token = MatchToken("nullable", matcher);
             Assert.Null(token);
+        }
+
+        [Test]
+        public void LexerNext()
+        {
+            var lexer = new Lexer("{'a':0}");
+            var token = lexer.Next();
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.LeftCurlyBracket, token.Type);
+
+            token = lexer.Next();
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.String, token.Type);
+
+            token = lexer.Next();
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Colon, token.Type);
+
+            token = lexer.Next();
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+
+            token = lexer.Next();
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.RightCurlyBracket, token.Type);
+
+            token = lexer.Next();
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.EOF, token.Type);
+        }
+
+        [Test]
+        public void LexerThrowsException()
+        {
+            var lexer = new Lexer("'unclosed string");
+            Assert.Throws<MatcherException>(() => lexer.Next());
+
+            lexer = new Lexer("/* unclosed comment\n");
+            Assert.Throws<MatcherException>(() => lexer.Next());
+
+            lexer = new Lexer("unknown token");
+            Assert.Throws<LexerException>(() => lexer.Next());
         }
 
         private static Token MatchToken(string source, Matcher matcher)

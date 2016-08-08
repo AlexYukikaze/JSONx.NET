@@ -39,7 +39,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lexers\KeywordMatcher.cs" />
-    <Compile Include="Lexers\MatcherException.cs" />
+    <Compile Include="Lexers\Lexer.cs" />
+    <Compile Include="Lexers\Lexer.Utils.cs" />
+    <Compile Include="Lexers\LexerExceptions.cs" />
     <Compile Include="Lexers\Matcher.cs" />
     <Compile Include="Lexers\MultilineCommentMatcher.cs" />
     <Compile Include="Lexers\NumberMatcher.cs" />
