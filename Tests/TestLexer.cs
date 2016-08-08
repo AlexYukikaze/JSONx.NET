@@ -208,6 +208,21 @@ namespace Tests
             Assert.Null(token);
         }
 
+        [Test]
+        public void MatchOperator()
+        {
+            var matcher = new OperatorMatcher(TokenType.LeftCurlyBracket, "{");
+            var token = MatchToken("{{", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.LeftCurlyBracket, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(1, 1, 2), token.Span.End);
+
+            token = MatchToken("[", matcher);
+            Assert.Null(token);
+
+        }
+
         private static Token MatchToken(string source, Matcher matcher)
         {
             var tokenizer = new Tokenizer(source);
