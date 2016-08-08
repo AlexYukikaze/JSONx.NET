@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Xml;
-using JSONx.Lexers;
+﻿using JSONx.Lexers;
 using NUnit.Framework;
 
 namespace Tests
