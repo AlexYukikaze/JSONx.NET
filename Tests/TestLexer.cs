@@ -223,6 +223,20 @@ namespace Tests
 
         }
 
+        [Test]
+        public void MatchKeyword()
+        {
+            var matcher = new KeywordMatcher(TokenType.Null, "null");
+            var token = MatchToken("null", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Null, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(4, 1, 5), token.Span.End);
+
+            token = MatchToken("nullable", matcher);
+            Assert.Null(token);
+        }
+
         private static Token MatchToken(string source, Matcher matcher)
         {
             var tokenizer = new Tokenizer(source);

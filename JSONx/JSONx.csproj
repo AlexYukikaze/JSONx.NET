@@ -38,10 +38,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lexers\KeywordMatcher.cs" />
     <Compile Include="Lexers\MatcherException.cs" />
     <Compile Include="Lexers\Matcher.cs" />
     <Compile Include="Lexers\MultilineCommentMatcher.cs" />
     <Compile Include="Lexers\NumberMatcher.cs" />
+    <Compile Include="Lexers\OperatorMatcher.cs" />
     <Compile Include="Lexers\PositionEntry.cs" />
     <Compile Include="Lexers\SinglelineCommentMatcher.cs" />
     <Compile Include="Lexers\StringMatcher.cs" />
