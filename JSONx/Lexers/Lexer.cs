@@ -13,12 +13,13 @@ namespace JSONx.Lexers
 
         public Token Next()
         {
+        skip:
             foreach (var matcher in IgnoredMatches)
             {
                 var token = matcher.Match(_tokenizer);
                 if (token != null)
                 {
-                    break;
+                    goto skip;
                 }
             }
 
@@ -29,6 +30,12 @@ namespace JSONx.Lexers
                 {
                     return token;
                 }
+            }
+
+            if (_tokenizer.End())
+            {
+                var pos = _tokenizer.Position;
+                return new Token(TokenType.EOF, new TokenSpan(pos, pos));
             }
 
             throw new LexerException("Unknown token", _tokenizer.Position);

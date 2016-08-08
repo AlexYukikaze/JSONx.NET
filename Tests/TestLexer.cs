@@ -1,4 +1,5 @@
-﻿using JSONx.Lexers;
+﻿using System.Linq;
+using JSONx.Lexers;
 using NUnit.Framework;
 
 namespace Tests
@@ -264,6 +265,20 @@ namespace Tests
             token = lexer.Next();
             Assert.NotNull(token);
             Assert.AreEqual(TokenType.EOF, token.Type);
+        }
+
+        [Test]
+        public void LexerTokenize()
+        {
+            var lexer = new Lexer("{ 'a' : /* magic number */ -1 }");
+            var expected = new[]
+            {
+                TokenType.LeftCurlyBracket, TokenType.String, TokenType.Colon, TokenType.Number,
+                TokenType.RightCurlyBracket, TokenType.EOF
+            };
+            var tokenTypes = lexer.Tokenize().Select(token => token.Type).ToArray();
+
+            Assert.AreEqual(expected, tokenTypes);
         }
 
         [Test]
