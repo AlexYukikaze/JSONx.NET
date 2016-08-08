@@ -152,6 +152,62 @@ namespace Tests
             Assert.AreEqual("\\xZZ\\x1R", token.Value);
         }
 
+        [Test]
+        public void MatchNumber()
+        {
+            var matcher = new NumberMatcher();
+            var token = MatchToken("0", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(1, 1, 2), token.Span.End);
+            Assert.AreEqual("0", token.Value);
+
+            token = MatchToken("-1", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(2, 1, 3), token.Span.End);
+            Assert.AreEqual("-1", token.Value);
+
+            token = MatchToken("123", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(3, 1, 4), token.Span.End);
+            Assert.AreEqual("123", token.Value);
+
+            token = MatchToken("3.14", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(4, 1, 5), token.Span.End);
+            Assert.AreEqual("3.14", token.Value);
+
+            token = MatchToken("1e1", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(3, 1, 4), token.Span.End);
+            Assert.AreEqual("1e1", token.Value);
+
+            token = MatchToken("1.1e1", matcher);
+            Assert.NotNull(token);
+            Assert.AreEqual(TokenType.Number, token.Type);
+            Assert.AreEqual(new PositionEntry(0, 1, 1), token.Span.Begin);
+            Assert.AreEqual(new PositionEntry(5, 1, 6), token.Span.End);
+            Assert.AreEqual("1.1e1", token.Value);
+
+            token = MatchToken("1.", matcher);
+            Assert.Null(token);
+
+            token = MatchToken(".1", matcher);
+            Assert.Null(token);
+
+            token = MatchToken("1.e1", matcher);
+            Assert.Null(token);
+        }
+
         private static Token MatchToken(string source, Matcher matcher)
         {
             var tokenizer = new Tokenizer(source);

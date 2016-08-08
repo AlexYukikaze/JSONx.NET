@@ -30,5 +30,10 @@ namespace JSONx.Lexers
             if (ReferenceEquals(null, other)) return false;
             return Type.Equals(other.Type) && string.Equals(Value, other.Value);
         }
+
+        public override string ToString()
+        {
+            return string.Concat("JSONxToken(", Type, Value == null ? ")" : ", " + Value + ")");
+        }
     }
 }
