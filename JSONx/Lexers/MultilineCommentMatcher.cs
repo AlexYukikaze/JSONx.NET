@@ -27,7 +27,7 @@ namespace JSONx.Lexers
                     tokenizer.Consume();
                 }
             }
-            throw new LexerException("Comment not closed", tokenizer.PeekSnapshot());
+            throw new MatcherException("Comment not closed", tokenizer.PeekSnapshot());
         }
     }
 }

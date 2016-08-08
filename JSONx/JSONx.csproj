@@ -38,7 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lexers\LexerException.cs" />
+    <Compile Include="Lexers\MatcherException.cs" />
     <Compile Include="Lexers\Matcher.cs" />
     <Compile Include="Lexers\MultilineCommentMatcher.cs" />
     <Compile Include="Lexers\NumberMatcher.cs" />

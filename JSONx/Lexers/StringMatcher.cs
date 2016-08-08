@@ -32,7 +32,7 @@ namespace JSONx.Lexers
 
                 if (tokenizer.Current == '\n')
                 {
-                    throw new LexerException("Not closed string", tokenizer.PeekSnapshot());
+                    throw new MatcherException("Not closed string", tokenizer.PeekSnapshot());
                 }
 
                 if (tokenizer.Current == '\\')
@@ -52,7 +52,7 @@ namespace JSONx.Lexers
                     result.Append(tokenizer.Current);
                 }
             }
-            throw new LexerException("Not closed string", tokenizer.PeekSnapshot());
+            throw new MatcherException("Not closed string", tokenizer.PeekSnapshot());
         }
 
         private bool HandleEscapeSequences(Tokenizer tokenizer, StringBuilder sb)
