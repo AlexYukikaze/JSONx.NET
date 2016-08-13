@@ -1,15 +1,11 @@
-﻿using System.Globalization;
+﻿
+using System;
 
 namespace JSONx.JSON
 {
-    public class JValue : JNode
+    public class JValue : JNode, IEquatable<JValue>
     {
-        private readonly object _value;
-
-        public dynamic Value
-        {
-            get { return _value; }
-        }
+        protected object _value;
 
         public JValue(JType type) : base(type) { }
 
@@ -33,12 +29,31 @@ namespace JSONx.JSON
         public bool Equals(JValue other)
         {
             if (!base.Equals(other)) return false;
+            if (Type == JType.List) return Equals(this, other);
             return _value.Equals(other._value);
         }
 
         public override object Clone()
         {
             return new JValue(this);
+        }
+
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as JList);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (base.GetHashCode() * 397) ^ (_value != null ? _value.GetHashCode() : 0);
+            }
         }
     }
 }

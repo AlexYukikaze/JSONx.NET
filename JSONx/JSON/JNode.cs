@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
+using System.Linq;
 
 namespace JSONx.JSON
 {
@@ -19,7 +19,7 @@ namespace JSONx.JSON
 
         public virtual IEnumerator<JNode> GetEnumerator()
         {
-            return Extensions.Empty.GetEnumerator();
+            return Enumerable.Empty<JNode>().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -27,11 +27,21 @@ namespace JSONx.JSON
             return GetEnumerator();
         }
 
-        public virtual bool Equals(JNode other)
+        public bool Equals(JNode other)
         {
             if (ReferenceEquals(this, null)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Type.Equals(other.Type);
+            return Equals(Type, other.Type);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as JNode);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int) Type;
         }
 
         public abstract object Clone();
