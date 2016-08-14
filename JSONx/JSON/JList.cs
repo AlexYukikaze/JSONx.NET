@@ -1,127 +1,115 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting;
+using System.Text;
 
 namespace JSONx.JSON
 {
-    public class JList : JValue, IList<JValue>, IEquatable<JList>
+    public class JList : JNode, IList<JNode>
     {
-        private IList<JValue> items
+        private readonly List<JNode> _items;
+
+        public override bool HasChildren
         {
-            get { return (IList<JValue>)_value; }
+            get { return _items.Count > 0; }
         }
 
-        public JList() : base(JType.List)
+        public JList() : this(new List<JNode>()) { }
+        public JList(params JNode[] items) : this((IEnumerable<JNode>) items) { }
+        public JList(IEnumerable<JNode> items) : base(JType.List, new List<JNode>(items))
         {
-            _value = new List<JValue>();
+            _items = (List<JNode>)Storage;
         }
 
-        public JList(JList other) : base(other.Type)
+        public override JNode this[int index]
         {
-            _value = new List<JValue>(other.items.Count);
-            foreach (var item in other.items)
-            {
-                items.Add((JValue)item.Clone());
-            }
+            get { return _items[index]; }
+            set { _items[index] = value; }
         }
 
-        public bool Equals(JList other)
+        public int IndexOf(JNode item)
         {
-            if (ReferenceEquals(other, null)) return false;
-
-            if (items.Count != other.Count) return false;
-
-            for (int i = 0; i < items.Count; i++)
-            {
-                var a = items[i];
-                var b = other.items[i];
-                if (!a.Equals(b)) return false;
-            }
-            return true;
+            return _items.IndexOf(item);
         }
 
-        public override bool Equals(object obj)
+        public void Insert(int index, JNode item)
         {
-            return Equals(obj as JList);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override object Clone()
-        {
-            return new JList(this);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("[{0}]", string.Join(", ", items));
-        }
-
-        #region IList<JValue> implimentation
-
-        IEnumerator<JValue> IEnumerable<JValue>.GetEnumerator()
-        {
-            return items.GetEnumerator();
-        }
-
-        public void Add(JValue item)
-        {
-            items.Add(item);
-        }
-
-        public void Clear()
-        {
-            items.Clear();
-        }
-
-        public bool Contains(JValue item)
-        {
-            return items.Contains(item);
-        }
-
-        public void CopyTo(JValue[] array, int arrayIndex)
-        {
-            items.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(JValue item)
-        {
-            return items.Remove(item);
-        }
-
-        public int Count
-        {
-            get { return items.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return items.IsReadOnly; }
-        }
-
-        public int IndexOf(JValue item)
-        {
-            return items.IndexOf(item);
-        }
-
-        public void Insert(int index, JValue item)
-        {
-            items.Insert(index, item);
+            _items.Insert(index, item);
         }
 
         public void RemoveAt(int index)
         {
-            items.RemoveAt(index);
+            _items.RemoveAt(index);
         }
 
-        public JValue this[int index1]
+        public override IEnumerator<JNode> GetEnumerator()
         {
-            get { return items[index1]; }
-            set { items[index1] = value; }
+            return _items.GetEnumerator();
         }
 
-        #endregion
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Add(JNode item)
+        {
+            _items.Add(item);
+        }
+
+        public void Clear()
+        {
+            _items.Clear();
+        }
+
+        public bool Contains(JNode item)
+        {
+            return _items.Contains(item);
+        }
+
+        public void CopyTo(JNode[] array, int arrayIndex)
+        {
+            _items.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(JNode item)
+        {
+            return _items.Remove(item);
+        }
+
+        public int Count
+        {
+            get { return _items.Count; }
+        }
+
+        bool ICollection<JNode>.IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!base.Equals(obj)) return false;
+            var other = obj as JList;
+            return other != null  && _items.SequenceEqual(other._items);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (base.GetHashCode() * 397) ^ (_items != null ? _items.GetHashCode() : 0);
+            }
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            result.Append("[");
+            result.Append(string.Join(", ", _items));
+            result.Append("]");
+            return result.ToString();
+        }
     }
 }

@@ -8,6 +8,7 @@
         String,
         Object,
         List,
-        Null
+        Null,
+        Property
     }
 }

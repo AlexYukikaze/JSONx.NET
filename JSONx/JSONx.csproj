@@ -41,6 +41,9 @@
     <Compile Include="JSON\Extensions.cs" />
     <Compile Include="JSON\JList.cs" />
     <Compile Include="JSON\JNode.cs" />
+    <Compile Include="JSON\JObject.cs" />
+    <Compile Include="JSON\JProperty.cs" />
+    <Compile Include="JSON\JPropertyCollection.cs" />
     <Compile Include="JSON\JType.cs" />
     <Compile Include="JSON\JValue.cs" />
     <Compile Include="Lexers\KeywordMatcher.cs" />

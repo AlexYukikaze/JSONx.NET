@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using JSONx.JSON;
 using NUnit.Framework;
 
@@ -8,79 +8,79 @@ namespace Tests
     public class TestJson
     {
         [Test]
-        public void ValueEquality()
+        public void TestJsonValue()
         {
-            var intValue = new JValue(3);
-            var intCopy = (JValue)intValue.Clone();
-            var floatValue = new JValue(3.14);
+            JNode jNumber = new JValue(0);
+            JNode jBoolean = new JValue(true);
+            JNode jString = new JValue("value");
+            JNode jNull = new JValue();
 
-            Assert.AreEqual(JType.Integer, intValue.Type);
-            Assert.AreEqual(JType.Integer, intCopy.Type);
-            Assert.AreEqual(intValue, intCopy);
-            Assert.AreNotEqual(intValue, floatValue);
+            Assert.AreEqual(new JValue(0), jNumber);
+            Assert.AreEqual(new JValue(true), jBoolean);
+            Assert.AreEqual(new JValue("value"), jString);
+            Assert.AreEqual(JNode.Null, jNull);
         }
 
         [Test]
-        public void ListEquality()
+        public void TestJsonList()
         {
-            var one = new JList
-            {
-                new JValue(0), new JValue(true), new JValue("hello")
-            };
+            JNode json = new JList(0, "value", true, JNode.Null);
+            Assert.AreEqual(new JValue(0), json[0]);
+            Assert.AreEqual(new JValue("value"), json[1]);
+            Assert.AreEqual(new JValue(true), json[2]);
+            Assert.AreEqual(JNode.Null, json[3]);
 
-            var two = new JList
-            {
-                new JValue(0),
-                new JValue(true),
-                new JValue("hello")
-            };
+            Assert.AreEqual((JValue) 0, json[0]);
+            Assert.AreEqual((JValue) "value", json[1]);
+            Assert.AreEqual((JValue) true, json[2]);
+            Assert.AreEqual(JNode.Null, json[3]);
 
-            var three = new JList
-            {
-                new JValue(0),
-                new JValue(true),
-                new JValue("BANG!")
-            };
+            Assert.AreEqual(new JList(0, "value", true, JNode.Null), json);
+            Assert.AreNotEqual(new JList(0, "value", true), json);
 
-            var four = new JList
+            foreach (var item in json)
             {
-                new JValue(0),
-                one
-            };
-
-            var five = new JList
-            {
-                new JValue(0),
-                two
-            };
-
-            var six = new JList
-            {
-                new JValue(0),
-                new JList()
-            };
-
-            Assert.AreEqual(one, two);
-            Assert.AreEqual(four, five);
-            Assert.AreNotEqual(one, three);
-            Assert.AreNotEqual(five, six);
+                Assert.IsInstanceOf<JValue>(item);
+            }
         }
 
         [Test]
-        public void ListCloneEquality()
+        public void TestJsonObject()
         {
-            var value = new JList
+            JNode json = new JObject(new JProperty("key", "value"), new JProperty("number", 123));
+            Assert.AreEqual(new JValue(123), json["number"]);
+            Assert.AreEqual(new JValue("value"), json["key"]);
+
+            foreach (var item in json)
             {
-                new JValue(0),
-                new JList
+                Assert.IsInstanceOf<JProperty>(item);
+            }
+        }
+
+        [Test]
+        public void TestNestedJson()
+        {
+            JNode json = new JObject
+            {
                 {
-                    new JValue("value")
-                }
+                    "list", new JList
+                    {
+                        0,
+                        new JObject
+                        {
+                            {"inner", 1}
+                        }
+                    }
+                },
+                new JProperty("key", "value")
             };
 
-            var copy = (JList)value.Clone();
-            Assert.AreEqual(JType.List, copy.Type);
-            Assert.AreEqual(value, copy);
+            Assert.IsTrue(json["list"].HasChildren);
+            Assert.AreEqual(2, json["list"].Count());
+            Assert.AreEqual(new JValue(0), json["list"][0]);
+            Assert.AreEqual(new JValue(1), json["list"][1]["inner"]);
+            Assert.AreEqual(new JValue("value"), json["key"]);
         }
+
     }
 }

@@ -1,25 +1,50 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace JSONx.JSON
 {
-    public abstract class JNode : IEnumerable<JNode>, ICloneable, IEquatable<JNode>
+    public abstract class JNode : IEnumerable<JNode>
     {
-        public virtual JType Type { get; }
+        public static readonly JNode Null = new JValue();
+        protected readonly object Storage;
+        public JType Type { get; }
 
-        protected JNode(JType type)
+        protected JNode(JType type, object value)
         {
             Type = type;
+            Storage = value;
         }
 
-        protected JNode(JNode other)
-            : this(other.Type) { }
-
-        public virtual IEnumerator<JNode> GetEnumerator()
+        public virtual JNode this[string key]
         {
-            return Enumerable.Empty<JNode>().GetEnumerator();
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public virtual JNode this[int index]
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public abstract IEnumerator<JNode> GetEnumerator();
+        public abstract bool HasChildren { get; }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(obj, null)) return false;
+            var node = obj as JNode;
+            return node != null && Equals(Type, node.Type);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Storage != null ? Storage.GetHashCode() : 0) * 397) ^ (int) Type;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -27,23 +52,34 @@ namespace JSONx.JSON
             return GetEnumerator();
         }
 
-        public bool Equals(JNode other)
+        public static implicit operator JNode(int value)
         {
-            if (ReferenceEquals(this, null)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(Type, other.Type);
+            return new JValue(value);
         }
 
-        public override bool Equals(object obj)
+        public static implicit operator JNode(long value)
         {
-            return Equals(obj as JNode);
+            return new JValue(value);
         }
 
-        public override int GetHashCode()
+        public static implicit operator JNode(float value)
         {
-            return (int) Type;
+            return new JValue(value);
         }
 
-        public abstract object Clone();
+        public static implicit operator JNode(double value)
+        {
+            return new JValue(value);
+        }
+
+        public static implicit operator JNode(bool value)
+        {
+            return new JValue(value);
+        }
+
+        public static implicit operator JNode(string value)
+        {
+            return new JValue(value);
+        }
     }
 }
