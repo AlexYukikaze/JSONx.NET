@@ -93,7 +93,7 @@ namespace Tests
         }
 
         [Test]
-        public void ParsesEnsureT()
+        public void ParserEnsureT()
         {
             var tokens = new List<Token> {
                 new Token(TokenType.Number), new Token(TokenType.Comma), new Token(TokenType.Number),
