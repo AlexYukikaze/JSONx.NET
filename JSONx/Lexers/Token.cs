@@ -1,28 +1,27 @@
 ﻿using System;
+using JSONx.AST;
 
 namespace JSONx.Lexers
 {
-    public class Token : IEquatable<Token>
+    public class Token : PositionEntity, IEquatable<Token>
     {
         public TokenType Type { get; }
         public string Value { get; }
-        public TokenSpan Span { get; set; }
 
-        public Token(TokenType type, TokenSpan span, string value)
+        public Token(TokenType type, Position begin, Position end, string value) : base(begin, end)
         {
             Type = type;
-            Span = span;
             Value = value;
         }
 
-        public Token(TokenType type, TokenSpan span) :
-            this(type, span, null) { }
+        public Token(TokenType type, Position begin, Position end) :
+            this(type, begin, end, null) { }
 
         public Token(TokenType type, string value) :
-            this(type, new TokenSpan(), value) { }
+            this(type, new Position(0, 1, 1), new Position(0, 1, 1), value) { }
 
         public Token(TokenType type) :
-            this(type, new TokenSpan(), null) { }
+            this(type, new Position(0, 1, 1), new Position(0, 1, 1), null) { }
 
         public bool Equals(Token other)
         {

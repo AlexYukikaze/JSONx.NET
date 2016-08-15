@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JSONx.AST;
 
 namespace JSONx.Lexers
 {
@@ -35,7 +36,7 @@ namespace JSONx.Lexers
             if (_tokenizer.End())
             {
                 var pos = _tokenizer.Position;
-                return new Token(TokenType.EOF, new TokenSpan(pos, pos));
+                return new Token(TokenType.EOF, pos, pos);
             }
 
             throw new LexerException("Unknown token", _tokenizer.Position);

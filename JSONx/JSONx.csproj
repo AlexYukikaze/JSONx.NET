@@ -38,6 +38,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\JSONxNode.cs" />
+    <Compile Include="AST\Position.cs" />
+    <Compile Include="AST\PositionEntity.cs" />
     <Compile Include="JSON\Extensions.cs" />
     <Compile Include="JSON\JList.cs" />
     <Compile Include="JSON\JNode.cs" />
@@ -54,20 +57,24 @@
     <Compile Include="Lexers\MultilineCommentMatcher.cs" />
     <Compile Include="Lexers\NumberMatcher.cs" />
     <Compile Include="Lexers\OperatorMatcher.cs" />
-    <Compile Include="Lexers\PositionEntry.cs" />
     <Compile Include="Lexers\SinglelineCommentMatcher.cs" />
     <Compile Include="Lexers\StringMatcher.cs" />
     <Compile Include="Lexers\Token.cs" />
     <Compile Include="Lexers\Tokenizer.cs" />
-    <Compile Include="Lexers\TokenSpan.cs" />
     <Compile Include="Lexers\TokenStream.cs" />
     <Compile Include="Lexers\TokenType.cs" />
     <Compile Include="Lexers\WhitespaceMatcher.cs" />
+    <Compile Include="Parsers\Parser.cs" />
+    <Compile Include="Parsers\Parser.Utils.cs" />
+    <Compile Include="Parsers\ParserExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AST" />
     <Folder Include="JSON" />
     <Folder Include="Lexers" />
+    <Folder Include="Parsers" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

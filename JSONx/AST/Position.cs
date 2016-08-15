@@ -1,21 +1,21 @@
 ﻿using System;
 
-namespace JSONx.Lexers
+namespace JSONx.AST
 {
-    public class PositionEntry : IEquatable<PositionEntry>
+    public class Position : IEquatable<Position>
     {
         public int Index { get; }
         public int Row { get; }
         public int Column { get; }
 
-        public PositionEntry(int index, int row, int col)
+        public Position(int index, int row, int col)
         {
             Index = index;
             Row = row;
             Column = col;
         }
 
-        public bool Equals(PositionEntry other)
+        public bool Equals(Position other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (ReferenceEquals(null, other)) return false;
@@ -24,7 +24,7 @@ namespace JSONx.Lexers
 
         public override string ToString()
         {
-            return string.Format("{0} ({1}:{2})", Index, Row, Column);
+            return $"at {Index} (Line {Row}:{Column})";
         }
     }
 }

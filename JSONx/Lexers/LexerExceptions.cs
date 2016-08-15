@@ -1,15 +1,14 @@
 ﻿using System;
+using JSONx.AST;
 
 namespace JSONx.Lexers
 {
     public class MatcherException : Exception
     {
-        private const string MESSAGE_FORMAT = " at index {0} (line {1}, column {2}).";
+        public Position Position { get; }
 
-        public PositionEntry Position { get; }
-
-        public MatcherException(string message, PositionEntry pos) :
-            base(message + string.Format(MESSAGE_FORMAT, pos.Index, pos.Row, pos.Column))
+        public MatcherException(string message, Position pos) :
+            base(message + string.Format(Utils.POSITION_MESSAGE_FORMAT, pos.Index, pos.Row, pos.Column))
         {
             Position = pos;
         }
@@ -17,7 +16,7 @@ namespace JSONx.Lexers
 
     public class LexerException : MatcherException
     {
-        public LexerException(string message, PositionEntry pos) :
+        public LexerException(string message, Position pos) :
             base(message, pos) { }
     }
 }

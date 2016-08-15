@@ -12,8 +12,8 @@
             }
             else
             {
-                token.Span.Begin = tokenizer.PeekSnapshot();
-                token.Span.End = tokenizer.Position;
+                token.Begin = tokenizer.PeekSnapshot();
+                token.End = tokenizer.Position;
                 tokenizer.CommitSnapshot();
             }
             return token;
