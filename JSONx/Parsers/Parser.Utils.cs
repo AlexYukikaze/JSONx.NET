@@ -10,13 +10,13 @@ namespace JSONx.Parsers
     public partial class Parser
     {
         [DebuggerStepThrough]
-        private void Skip(int count = 1)
+        protected void Skip(int count = 1)
         {
             _index = Math.Min(_index + count, _tokensCount - 1);
         }
 
         [DebuggerStepThrough]
-        private void Error(string message, params object[] args)
+        protected void Error(string message, params object[] args)
         {
             var pos = _tokens[_index].Begin;
             var sb = new StringBuilder();
@@ -26,7 +26,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        private bool Peek(params TokenType[] types)
+        protected bool Peek(params TokenType[] types)
         {
             var i = _index;
             foreach (var tokenType in types)
@@ -39,7 +39,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        private bool Check(TokenType type)
+        protected bool Consume(TokenType type)
         {
             var cur = _tokens[_index];
             if (cur.Type == type)
@@ -51,7 +51,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        private Token Ensure(TokenType type, string message, params object[] args)
+        protected Token Ensure(TokenType type, string message, params object[] args)
         {
             var token = _tokens[_index];
             if (token.Type != type)
@@ -63,7 +63,7 @@ namespace JSONx.Parsers
         }
 
 
-        private T Ensure<T>(Func<T> getter, string message, params object[] args) where T : PositionEntity
+        protected T Ensure<T>(Func<T> getter, string message, params object[] args) where T : PositionEntity
         {
             var result = BindPosition(getter);
             if (result == null)
@@ -74,7 +74,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        private T Attempt<T>(Func<T> getter) where T : PositionEntity
+        protected T Attempt<T>(Func<T> getter) where T : PositionEntity
         {
             var backup = _index;
             var result = BindPosition(getter);
@@ -86,7 +86,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        private List<T> Attempt<T>(Func<List<T>> getter) where T : PositionEntity
+        protected List<T> Attempt<T>(Func<List<T>> getter) where T : PositionEntity
         {
             var backup = _index;
             var result = getter();
@@ -98,7 +98,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        private T BindPosition<T>(Func<T> getter) where T : PositionEntity
+        protected T BindPosition<T>(Func<T> getter) where T : PositionEntity
         {
             var beginIndex = _index;
             var tokenStart = _tokens[_index];
