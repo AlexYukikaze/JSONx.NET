@@ -98,7 +98,7 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        protected T BindPosition<T>(Func<T> getter) where T : PositionEntity
+        private T BindPosition<T>(Func<T> getter) where T : PositionEntity
         {
             var beginIndex = _index;
             var tokenStart = _tokens[_index];
