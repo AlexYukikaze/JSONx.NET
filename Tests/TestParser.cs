@@ -60,7 +60,7 @@ namespace Tests
         }
 
         [Test]
-        public void ParserConsume()
+        public void ParserCheck()
         {
             var tokens = new List<Token> {
                 new Token(TokenType.Number),
@@ -70,11 +70,11 @@ namespace Tests
 
             var parser = new TestParser(tokens);
             Assert.AreEqual(0, parser._index);
-            Assert.True(parser.Consume(TokenType.Number));
+            Assert.True(parser.Check(TokenType.Number));
             Assert.AreEqual(1, parser._index);
-            Assert.True(parser.Consume(TokenType.Comma));
+            Assert.True(parser.Check(TokenType.Comma));
             Assert.AreEqual(2, parser._index);
-            Assert.False(parser.Consume(TokenType.Number));
+            Assert.False(parser.Check(TokenType.Number));
         }
 
         [Test]
@@ -101,9 +101,9 @@ namespace Tests
             };
 
             var parser = new TestParser(tokens);
-            Func<Token> getter = () => parser.Consume(TokenType.Number) &&
-                                       parser.Consume(TokenType.Comma) &&
-                                       parser.Consume(TokenType.Number) ? new Token(TokenType.Null) : null;
+            Func<Token> getter = () => parser.Check(TokenType.Number) &&
+                                       parser.Check(TokenType.Comma) &&
+                                       parser.Check(TokenType.Number) ? new Token(TokenType.Null) : null;
 
             var result = parser.Ensure(getter, "List of numbers expected");
             Assert.NotNull(result);
@@ -120,9 +120,9 @@ namespace Tests
             };
 
             var parser = new TestParser(tokens);
-            Func<Token> getter = () => parser.Consume(TokenType.Number) &&
-                                       parser.Consume(TokenType.Comma) &&
-                                       parser.Consume(TokenType.Number) ? new Token(TokenType.Null) : null;
+            Func<Token> getter = () => parser.Check(TokenType.Number) &&
+                                       parser.Check(TokenType.Comma) &&
+                                       parser.Check(TokenType.Number) ? new Token(TokenType.Null) : null;
 
             var result = parser.Attempt(getter);
             Assert.NotNull(result);

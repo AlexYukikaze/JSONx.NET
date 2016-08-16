@@ -1,9 +1,11 @@
 ﻿namespace JSONx.AST
 {
-    abstract class JSONxNode : PositionEntity
+    public abstract class JSONxNode : PositionEntity
     {
-        protected JSONxNode(Position begin, Position end) : base(begin, end)
+        public NodeType Type { get; }
+        protected JSONxNode(NodeType type) : base(new Position(0, 1, 1), new Position(0, 1, 1))
         {
+            Type = type;
         }
     }
 }

@@ -39,7 +39,19 @@ namespace JSONx.Parsers
         }
 
         [DebuggerStepThrough]
-        protected bool Consume(TokenType type)
+        protected Token Attempt(TokenType type)
+        {
+            var cur = _tokens[_index];
+            if (cur.Type == type)
+            {
+                Skip();
+                return cur;
+            }
+            return null;
+        }
+
+        [DebuggerStepThrough]
+        protected bool Check(TokenType type)
         {
             var cur = _tokens[_index];
             if (cur.Type == type)
