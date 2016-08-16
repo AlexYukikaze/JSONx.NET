@@ -24,7 +24,7 @@ namespace JSONx.AST
 
         public override string ToString()
         {
-            return $"at {Index} (Line {Row}:{Column})";
+            return string.Format(Utils.POSITION_MESSAGE_FORMAT, Index, Row, Column);
         }
     }
 }
