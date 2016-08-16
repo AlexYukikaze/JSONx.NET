@@ -4,10 +4,14 @@ namespace JSONx.AST
 {
     public class ObjectNode : JSONxNode
     {
-        public List<PropertyNode> Children { get; }
+        private readonly List<PropertyNode> _items;
+
+        public override IEnumerable<JSONxNode> Children => _items;
+        public override bool HasChildren => _items.Count > 0;
+
         public ObjectNode(List<PropertyNode> props) : base(NodeType.Object)
         {
-            Children = props;
+            _items = props;
         }
     }
 }
