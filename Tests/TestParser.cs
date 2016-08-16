@@ -111,5 +111,25 @@ namespace Tests
             Assert.AreEqual(3, parser._index);
             Assert.Throws<ParserException>(() => parser.Ensure(getter, "List of numbers expected"));
         }
+
+        public void ParserAttempt()
+        {
+            var tokens = new List<Token> {
+                new Token(TokenType.Number), new Token(TokenType.Comma), new Token(TokenType.Number),
+                new Token(TokenType.Number), new Token(TokenType.Comma), new Token(TokenType.EOF)
+            };
+
+            var parser = new TestParser(tokens);
+            Func<Token> getter = () => parser.Consume(TokenType.Number) &&
+                                       parser.Consume(TokenType.Comma) &&
+                                       parser.Consume(TokenType.Number) ? new Token(TokenType.Null) : null;
+
+            var result = parser.Attempt(getter);
+            Assert.NotNull(result);
+            Assert.AreEqual(TokenType.Null, result.Type);
+            Assert.AreEqual(3, parser._index);
+            Assert.Null(parser.Attempt(getter));
+            Assert.AreEqual(3, parser._index);
+        }
     }
 }
