@@ -39,10 +39,10 @@ namespace JSONx.Parsers
                    Attempt(ParseString) ??
                    Attempt(ParseNumber) ??
                    Attempt(ParseList) ??
-                   Attempt(ParseObject);
+                   (JSONxNode)Attempt(ParseObject); // HACK
         }
 
-        protected JSONxNode ParseObject()
+        protected ObjectNode ParseObject()
         {
             if (!Check(TokenType.LeftCurlyBracket)) return null;
             var props = Attempt(ParsePropertyList);
