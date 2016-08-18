@@ -26,8 +26,8 @@ namespace JSONx.Parsers
 
         public JSONxNode Parse()
         {
-            var value = Ensure(ParseValue, "Value expected");
-            Ensure(TokenType.EOF, "End of file expected");
+            var value = Ensure(ParseValue, "Expected <value> got {0}", _tokens[_index]);
+            Ensure(TokenType.EOF, "Expected <EOF> got {0}", _tokens[_index]);
             return value;
         }
 
@@ -44,7 +44,35 @@ namespace JSONx.Parsers
 
         protected JSONxNode ParseObject()
         {
-            return null;
+            if (!Check(TokenType.LeftCurlyBracket)) return null;
+            var props = Attempt(ParsePropertyList);
+            Ensure(TokenType.RightCurlyBracket, "Expected '}}' got {0}", _tokens[_index].Type);
+            return new ObjectNode(props);
+        }
+
+        private List<PropertyNode> ParsePropertyList()
+        {
+            var result = new List<PropertyNode>();
+            var value = ParseProperty();
+            while (value != null)
+            {
+                result.Add(value);
+                if (!Check(TokenType.Comma))
+                {
+                    break;
+                }
+                value = Ensure(ParseProperty, "Expected <key> : <value> pair got {0}", _tokens[_index]);
+            }
+            return result;
+        }
+
+        private PropertyNode ParseProperty()
+        {
+            var key = Attempt(TokenType.String);
+            if (key == null) return null;
+            Ensure(TokenType.Colon, "Expected ':' got {0}", _tokens[_index]);
+            var value = Ensure(ParseValue, "Expected <value> got {0}", _tokens[_index]);
+            return new PropertyNode(new KeyNode(key.Value), value);
         }
 
         protected ListNode ParseList()
@@ -62,14 +90,11 @@ namespace JSONx.Parsers
             while (value != null)
             {
                 result.Add(value);
-                if (Check(TokenType.Comma))
-                {
-                    value = Ensure(ParseValue, "Value expected got {0}", _tokens[_index]);
-                }
-                else
+                if (!Check(TokenType.Comma))
                 {
                     break;
                 }
+                value = Ensure(ParseValue, "Expected <value> got {0}", _tokens[_index]);
             }
             return result;
         }

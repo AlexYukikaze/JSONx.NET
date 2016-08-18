@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JSONx.AST
 {
-    public class PropertyNode : JSONxNode
+    public class PropertyNode : JSONxNode, IEquatable<PropertyNode>
     {
         public KeyNode Key { get; }
         public JSONxNode Value { get; set; }
@@ -24,6 +25,11 @@ namespace JSONx.AST
             Value = value;
             key.Parent = this;
             value.Parent = this;
+        }
+
+        public bool Equals(PropertyNode other)
+        {
+            return Key.Equals(other.Key);
         }
     }
 }

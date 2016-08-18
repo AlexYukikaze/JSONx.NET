@@ -184,5 +184,51 @@ namespace Tests
             parser = new TestParser(tokens);
             Assert.Throws<ParserException>(() => parser.ParseList());
         }
+
+        [Test]
+        public void ParserObjectParse()
+        {
+            var tokens = new List<Token> {
+                new Token(TokenType.LeftCurlyBracket),
+                new Token(TokenType.String, "key"), new Token(TokenType.Colon), new Token(TokenType.String, "value"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.String, "key2"), new Token(TokenType.Colon), new Token(TokenType.String, "value"),
+                new Token(TokenType.RightCurlyBracket)
+            };
+            var parser = new TestParser(tokens);
+            var objectNode = parser.ParseObject();
+            Assert.NotNull(objectNode);
+            Assert.True(objectNode.HasChildren);
+            var expected = new List<PropertyNode> {
+                new PropertyNode(new KeyNode("key"), new StringNode("value")),
+                new PropertyNode(new KeyNode("key2"), new StringNode("value"))
+            };
+            Assert.That(objectNode.Children, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void ParserObjectParseThrows()
+        {
+            var tokens = new List<Token> {
+                new Token(TokenType.LeftCurlyBracket),
+                new Token(TokenType.String, "key"), new Token(TokenType.Colon), new Token(TokenType.String, "value"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.String, "key2"), new Token(TokenType.Colon), new Token(TokenType.String, "value"),
+                new Token(TokenType.EOF)
+            };
+            var parser = new TestParser(tokens);
+            Assert.Throws<ParserException>(() => parser.ParseObject());
+
+            tokens = new List<Token> {
+                new Token(TokenType.LeftCurlyBracket),
+                new Token(TokenType.String, "key"), new Token(TokenType.Colon), new Token(TokenType.String, "value"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.String, "key2"),
+                new Token(TokenType.RightCurlyBracket)
+            };
+
+            parser = new TestParser(tokens);
+            Assert.Throws<ParserException>(() => parser.ParseObject());
+        }
     }
 }
