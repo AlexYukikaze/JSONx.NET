@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JSONx.AST;
 using JSONx.Lexers;
 using JSONx.Parsers;
 using NUnit.Framework;
@@ -130,6 +131,58 @@ namespace Tests
             Assert.AreEqual(3, parser._index);
             Assert.Null(parser.Attempt(getter));
             Assert.AreEqual(3, parser._index);
+        }
+
+        [Test]
+        public void ParserListParse()
+        {
+            var tokens = new List<Token> {
+                new Token(TokenType.LeftSquareBracket),
+                new Token(TokenType.Number, "0"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.Number, "1"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.Number, "2"),
+                new Token(TokenType.RightSquareBracket)
+            };
+            var parser = new TestParser(tokens);
+            var listNode = parser.ParseList();
+            Assert.NotNull(listNode);
+            Assert.True(listNode.HasChildren);
+            var expected = new List<JSONxNode> {
+                new NumberNode(0),
+                new NumberNode(1),
+                new NumberNode(2)
+            };
+            Assert.That(listNode.Children, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void ParserListParseThrows()
+        {
+            var tokens = new List<Token> {
+                new Token(TokenType.LeftSquareBracket),
+                new Token(TokenType.Number, "0"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.Number, "1"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.RightSquareBracket)
+            };
+            var parser = new TestParser(tokens);
+            Assert.Throws<ParserException>(() => parser.ParseList());
+
+            tokens = new List<Token>
+            {
+                new Token(TokenType.LeftSquareBracket),
+                new Token(TokenType.Number, "0"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.Number, "1"),
+                new Token(TokenType.Comma),
+                new Token(TokenType.Number, "2"),
+                new Token(TokenType.EOF)
+            };
+            parser = new TestParser(tokens);
+            Assert.Throws<ParserException>(() => parser.ParseList());
         }
     }
 }

@@ -42,14 +42,36 @@ namespace JSONx.Parsers
                    Attempt(ParseObject);
         }
 
-        protected ListNode ParseList()
-        {
-            throw new NotImplementedException();
-        }
-
         protected JSONxNode ParseObject()
         {
-            throw new NotImplementedException();
+            return null;
+        }
+
+        protected ListNode ParseList()
+        {
+            if (!Check(TokenType.LeftSquareBracket)) return null;
+            var elements = Attempt(ParseListElements);
+            Ensure(TokenType.RightSquareBracket, "Expected ']' got {0}", _tokens[_index].Type);
+            return new ListNode(elements);
+        }
+
+        private List<JSONxNode> ParseListElements()
+        {
+            var result = new List<JSONxNode>();
+            var value = ParseValue();
+            while (value != null)
+            {
+                result.Add(value);
+                if (Check(TokenType.Comma))
+                {
+                    value = Ensure(ParseValue, "Value expected got {0}", _tokens[_index]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return result;
         }
 
         protected NumberNode ParseNumber()
@@ -69,7 +91,7 @@ namespace JSONx.Parsers
 
         protected StringNode ParseString()
         {
-            var token = Attempt(TokenType.Number);
+            var token = Attempt(TokenType.String);
             if (token != null)
             {
                 return new StringNode(token.Value);

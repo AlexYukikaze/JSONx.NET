@@ -47,6 +47,23 @@ namespace Tests
         }
 
         [Test]
+        public void ScalarTypeNodesEquality()
+        {
+            Assert.AreEqual(new StringNode("value"), new StringNode("value"));
+            Assert.AreNotEqual(new StringNode("value"), new StringNode("another value"));
+
+            Assert.AreEqual(new NumberNode(0), new NumberNode(0));
+            Assert.AreNotEqual(new NumberNode(0), new NumberNode(1));
+
+            Assert.AreEqual(new KeyNode("key"), new KeyNode("key"));
+            Assert.AreNotEqual(new KeyNode("key"), new KeyNode("another key"));
+
+            Assert.AreEqual(new NullNode(), new NullNode());
+            Assert.AreEqual(new TrueNode(), new TrueNode());
+            Assert.AreEqual(new FalseNode(), new FalseNode());
+        }
+
+        [Test]
         public void ListNode()
         {
             var emptyList = new ListNode();
