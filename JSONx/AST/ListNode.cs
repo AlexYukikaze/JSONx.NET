@@ -13,6 +13,10 @@ namespace JSONx.AST
         public ListNode(List<JSONxNode> nodes) : base(NodeType.List)
         {
             _items = nodes;
+            foreach (var node in nodes)
+            {
+                node.Parent = this;
+            }
         }
     }
 }

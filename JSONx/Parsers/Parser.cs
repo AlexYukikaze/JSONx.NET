@@ -57,8 +57,8 @@ namespace JSONx.Parsers
             var token = Attempt(TokenType.Number);
             if (token != null)
             {
-                decimal value;
-                if (!decimal.TryParse(token.Value, out value))
+                double value;
+                if (!double.TryParse(token.Value, out value))
                 {
                     Error("Bad number token '{0}'", token.Value);
                 }

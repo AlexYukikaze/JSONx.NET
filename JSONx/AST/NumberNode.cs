@@ -2,8 +2,8 @@
 {
     public class NumberNode : JSONxNode
     {
-        public decimal Value { get; set; }
-        public NumberNode(decimal value) : base(NodeType.Number)
+        public double Value { get; set; }
+        public NumberNode(double value) : base(NodeType.Number)
         {
             Value = value;
         }

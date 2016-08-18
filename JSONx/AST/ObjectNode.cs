@@ -12,6 +12,10 @@ namespace JSONx.AST
         public ObjectNode(List<PropertyNode> props) : base(NodeType.Object)
         {
             _items = props;
+            foreach (var node in props)
+            {
+                node.Parent = this;
+            }
         }
     }
 }

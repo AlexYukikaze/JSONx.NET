@@ -22,6 +22,8 @@ namespace JSONx.AST
         {
             Key = key;
             Value = value;
+            key.Parent = this;
+            value.Parent = this;
         }
     }
 }
