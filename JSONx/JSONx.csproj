@@ -49,6 +49,7 @@
     <Compile Include="AST\Position.cs" />
     <Compile Include="AST\PositionEntity.cs" />
     <Compile Include="AST\PropertyNode.cs" />
+    <Compile Include="AST\ReferenceNode.cs" />
     <Compile Include="AST\StringNode.cs" />
     <Compile Include="AST\TrueNode.cs" />
     <Compile Include="JSON\Extensions.cs" />

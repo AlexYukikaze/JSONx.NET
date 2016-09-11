@@ -26,7 +26,7 @@ namespace JSONx.Parsers
 
         public JSONxNode Parse()
         {
-            var value = Ensure(ParseValue, "Expected <value> got {0}", _tokens[_index]);
+            var value = Attempt(ParseValue);
             Ensure(TokenType.EOF, "Expected <EOF> got {0}", _tokens[_index]);
             return value;
         }
@@ -39,7 +39,25 @@ namespace JSONx.Parsers
                    Attempt(ParseString) ??
                    Attempt(ParseNumber) ??
                    Attempt(ParseList) ??
+                   Attempt(ParseReference) ??
                    (JSONxNode)Attempt(ParseObject); // HACK
+        }
+
+        protected ReferenceNode ParseReference()
+        {
+            if (!Check(TokenType.Dollar)) return null;
+            Ensure(TokenType.LeftCurlyBracket, "Expected '{{' got {0}", _tokens[_index]);
+            Token path = Ensure(TokenType.String, "Expected ReferencePath got {0}", _tokens[_index]);
+            Token file = null;
+            if (Check(TokenType.Colon))
+            {
+                file = path;
+                path = Ensure(TokenType.String, "Expected ReferenceFile got {0}", _tokens[_index]);
+            }
+            Ensure(TokenType.RightCurlyBracket, "Expected '}}' got {0}", _tokens[_index]);
+            var filePath = file != null ? file.Value : string.Empty;
+            var objectPath = path.Value;
+            return new ReferenceNode(filePath, objectPath);
         }
 
         protected ObjectNode ParseObject()

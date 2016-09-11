@@ -230,5 +230,39 @@ namespace Tests
             parser = new TestParser(tokens);
             Assert.Throws<ParserException>(() => parser.ParseObject());
         }
+
+        [Test]
+        public void ParserReferenceParse()
+        {
+            var tokens = new List<Token>
+            {
+                new Token(TokenType.Dollar),
+                new Token(TokenType.LeftCurlyBracket),
+                new Token(TokenType.String, "fileName"),
+                new Token(TokenType.Colon),
+                new Token(TokenType.String, "objectPath"),
+                new Token(TokenType.RightCurlyBracket),
+                new Token(TokenType.EOF)
+            };
+            var parser = new TestParser(tokens);
+            var reference = parser.ParseReference();
+            Assert.NotNull(reference);
+            Assert.AreEqual("fileName", reference.FilePath);
+            Assert.AreEqual("objectPath", reference.ObjectPath);
+
+            tokens = new List<Token>
+            {
+                new Token(TokenType.Dollar),
+                new Token(TokenType.LeftCurlyBracket),
+                new Token(TokenType.String, "objectPath"),
+                new Token(TokenType.RightCurlyBracket),
+                new Token(TokenType.EOF)
+            };
+            parser = new TestParser(tokens);
+            reference = parser.ParseReference();
+            Assert.NotNull(reference);
+            Assert.AreEqual(string.Empty, reference.FilePath);
+            Assert.AreEqual("objectPath", reference.ObjectPath);
+        }
     }
 }
